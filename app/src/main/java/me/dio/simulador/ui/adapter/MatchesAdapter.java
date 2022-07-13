@@ -1,6 +1,7 @@
 package me.dio.simulador.ui.adapter;
 
 import android.content.Context;
+import android.content.Intent;
 import android.view.LayoutInflater;
 import android.view.ViewGroup;
 
@@ -13,6 +14,7 @@ import java.util.List;
 
 import me.dio.simulador.databinding.MatchItemBinding;
 import me.dio.simulador.domain.Match;
+import me.dio.simulador.ui.DetailActivity;
 
 public class MatchesAdapter extends RecyclerView.Adapter<MatchesAdapter.ViewHolder> {
 
@@ -20,6 +22,10 @@ public class MatchesAdapter extends RecyclerView.Adapter<MatchesAdapter.ViewHold
 
     public MatchesAdapter(List<Match> matches) {
         this.matches = matches;
+    }
+
+    public List<Match> getMatches() {
+        return matches;
     }
 
     @NonNull
@@ -38,10 +44,21 @@ public class MatchesAdapter extends RecyclerView.Adapter<MatchesAdapter.ViewHold
         // adapta os dados da partida (recuperada da API) para o layout
         Glide.with(context).load(match.getHomeTeam().getImage()).into(holder.binding.ivHomeTeam);
         holder.binding.tvHomeTeamName.setText(match.getHomeTeam().getName());
+        if(match.getHomeTeam().getScore() != null) {
+            holder.binding.tvHomeTeamScore.setText(String.valueOf(match.getHomeTeam().getScore()));
+        }
         // podemos alterar a forma da imagem usando o atributo circleCrop() por exemplo
         //Glide.with(context).load(match.getAwayTeam().getImage()).circleCrop().into(holder.binding.ivAwayTeam);
         Glide.with(context).load(match.getAwayTeam().getImage()).into(holder.binding.ivAwayTeam);
         holder.binding.tvAwayTeamName.setText(match.getAwayTeam().getName());
+        if(match.getAwayTeam().getScore() != null) {
+            holder.binding.tvAwayTeamScore.setText(String.valueOf(match.getAwayTeam().getScore()));
+        }
+        holder.itemView.setOnClickListener(view -> {
+            Intent intent = new Intent(context, DetailActivity.class);
+            intent.putExtra(DetailActivity.Extras.MATCH,match);
+            context.startActivity(intent);
+        });
 
     }
 
